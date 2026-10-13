@@ -1,0 +1,992 @@
+{
+  "files": [
+    {
+      "system": "respiratory",
+      "title": "Respiratory System",
+      "file": "respiratory.json",
+      "count": 418
+    },
+    {
+      "system": "digestive",
+      "title": "Digestive System",
+      "file": "digestive.json",
+      "count": 420
+    },
+    {
+      "system": "immune",
+      "title": "Immune System",
+      "file": "immune.json",
+      "count": 379
+    }
+  ],
+  "sources": [
+    {
+      "id": "camas-2022",
+      "name": "Camas Invitational",
+      "date": "2022-12-03",
+      "file": "A_P Camas Invitational B Exam FINAL.docx.pdf",
+      "hasKey": true,
+      "keyFiles": [
+        "A_P Camas Invitational B Exam Key.docx.pdf",
+        "A_P Camas Invitational B Exam - Annotated Answer Key.pdf"
+      ],
+      "note": "Answers from the official key; explanations from the annotated answer key."
+    },
+    {
+      "id": "ga-scrimmage-2022",
+      "name": "2023 Georgia Scrimmage",
+      "date": "2022-10-15",
+      "file": "2023 GA Scrimmage - Anatomy _ Physiology - key.pdf",
+      "hasKey": true,
+      "note": "\"2023 GA Scrimmage - Anatomy _ Physiology - key (1).pdf\" is a byte-identical duplicate."
+    },
+    {
+      "id": "highlands-2022",
+      "name": "Highlands Virtual Invitational",
+      "date": "2022-10-08",
+      "file": "anatB.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "belleville-2022",
+      "name": "Belleville Satellite Invitational",
+      "date": "2022-11-12",
+      "file": "A_P.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "dodgen-walton-2022",
+      "name": "Dodgen-Walton Satellite",
+      "date": "2022-11-12",
+      "file": "Anatomy and Physiology Key.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "dick-smith-2022",
+      "name": "Dick Smith Memorial",
+      "date": "2022-12-03",
+      "file": "Anatomy B.pdf",
+      "hasKey": false,
+      "note": "No answer key was provided; answers were written by Claude (answerSource \"generated\"). Questions without a clear answer are marked \"uncertain\"."
+    },
+    {
+      "id": "boyceville-2022",
+      "name": "Boyceville Satellite Invitational",
+      "date": "2022-12-03",
+      "file": "AnatomyBKEY.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "rustin-2022",
+      "name": "Rustin B-Div Invitational",
+      "date": "2022-12-14",
+      "file": "Anatomy RHS Inv PrevTestKey.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "high-desert-mini-2023",
+      "name": "High Desert Mini Anatomy Test (Div B)",
+      "date": "2023-01-07",
+      "file": "ANAT B.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "stemboost-2023",
+      "name": "STEMBoost Invitational",
+      "date": "2023-01-21",
+      "file": "AP.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "high-desert-inv-2023",
+      "name": "High Desert Invitational",
+      "date": "2023-02-04",
+      "file": "ANATOMY B TEST KEY.pdf",
+      "hasKey": true
+    },
+    {
+      "id": "lbss",
+      "name": "LBSS Division B Anatomy Test",
+      "date": null,
+      "file": "LBSS Division B Anatomy Test.pdf",
+      "hasKey": true,
+      "note": "Answers are the highlighted choices in the test document."
+    },
+    {
+      "id": "raisbeck",
+      "name": "Raisbeck Invitational",
+      "date": null,
+      "file": "Anatomy and Physiology Test.docx.pdf",
+      "hasKey": false,
+      "note": "No answer key was provided; answers were written by Claude (answerSource \"generated\"). Questions without a clear answer are marked \"uncertain\"."
+    },
+    {
+      "id": "horace-greeley-2023",
+      "name": "Horace Greeley Invitational",
+      "date": "2023-02",
+      "file": "TEST_ Anatomy and Physiology.docx.pdf",
+      "hasKey": false,
+      "note": "No answer key was provided; answers were written by Claude (answerSource \"generated\"). Questions without a clear answer are marked \"uncertain\"."
+    },
+    {
+      "id": "rhs-2023",
+      "name": "RHS Invitational",
+      "date": "2023",
+      "file": "A_P Test RHS Division B Invitational 2023.pdf",
+      "hasKey": false,
+      "note": "No answer key was provided; answers were written by Claude (answerSource \"generated\"). Questions without a clear answer are marked \"uncertain\"."
+    }
+  ],
+  "tags": [
+    {
+      "id": "resp-anatomy",
+      "label": "Respiratory anatomy & functions",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.i",
+      "stateOnly": false,
+      "count": 131
+    },
+    {
+      "id": "ventilation",
+      "label": "Pulmonary ventilation",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.ii",
+      "stateOnly": false,
+      "count": 103
+    },
+    {
+      "id": "breathing-patterns",
+      "label": "Patterns of breathing",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.iii",
+      "stateOnly": false,
+      "count": 46
+    },
+    {
+      "id": "spirometry",
+      "label": "Spirograms & lung volumes",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.iv",
+      "stateOnly": false,
+      "count": 47
+    },
+    {
+      "id": "gas-exchange",
+      "label": "Gas exchange & O2 transport",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.v",
+      "stateOnly": false,
+      "count": 103
+    },
+    {
+      "id": "resp-exercise-altitude",
+      "label": "Exercise & high altitude",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.vi",
+      "stateOnly": false,
+      "count": 19
+    },
+    {
+      "id": "resp-diseases",
+      "label": "Respiratory diseases",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.vii",
+      "stateOnly": false,
+      "count": 50
+    },
+    {
+      "id": "resp-diseases-advanced",
+      "label": "Additional respiratory diseases",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.viii",
+      "stateOnly": true,
+      "count": 6
+    },
+    {
+      "id": "resp-regulation",
+      "label": "Blood chemistry & control of breathing",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.ix",
+      "stateOnly": true,
+      "count": 32
+    },
+    {
+      "id": "resp-treatments",
+      "label": "Respiratory treatments & prevention",
+      "kind": "topic",
+      "system": "respiratory",
+      "rule": "3.a.x",
+      "stateOnly": true,
+      "count": 10
+    },
+    {
+      "id": "nose-sinuses",
+      "label": "Nose & sinuses",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 18
+    },
+    {
+      "id": "pharynx-larynx",
+      "label": "Pharynx & larynx",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 40
+    },
+    {
+      "id": "trachea-bronchi",
+      "label": "Trachea & bronchial tree",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 64
+    },
+    {
+      "id": "lungs-pleura",
+      "label": "Lungs & pleura",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 46
+    },
+    {
+      "id": "alveoli",
+      "label": "Alveoli",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 90
+    },
+    {
+      "id": "breathing-muscles",
+      "label": "Breathing muscles",
+      "kind": "structure",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-anatomy",
+      "count": 29
+    },
+    {
+      "id": "copd",
+      "label": "COPD",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 9
+    },
+    {
+      "id": "asthma",
+      "label": "Asthma",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 14
+    },
+    {
+      "id": "emphysema",
+      "label": "Emphysema",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 8
+    },
+    {
+      "id": "pneumonia",
+      "label": "Pneumonia",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 6
+    },
+    {
+      "id": "sleep-apnea",
+      "label": "Sleep apnea",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 5
+    },
+    {
+      "id": "cystic-fibrosis",
+      "label": "Cystic fibrosis",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": false,
+      "parent": "resp-diseases",
+      "count": 13
+    },
+    {
+      "id": "tuberculosis",
+      "label": "Tuberculosis",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 1
+    },
+    {
+      "id": "pulmonary-edema",
+      "label": "Pulmonary edema",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 2
+    },
+    {
+      "id": "pleurisy",
+      "label": "Pleurisy",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 0
+    },
+    {
+      "id": "lung-cancer",
+      "label": "Lung cancer",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 2
+    },
+    {
+      "id": "pulmonary-fibrosis",
+      "label": "Pulmonary fibrosis",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 1
+    },
+    {
+      "id": "pneumoconiosis",
+      "label": "Pneumoconiosis",
+      "kind": "condition",
+      "system": "respiratory",
+      "stateOnly": true,
+      "parent": "resp-diseases-advanced",
+      "count": 1
+    },
+    {
+      "id": "dig-anatomy",
+      "label": "Digestive anatomy & functions",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.i-ii",
+      "stateOnly": false,
+      "count": 125
+    },
+    {
+      "id": "gi-wall-layers",
+      "label": "Four layers of the GI wall",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.iii",
+      "stateOnly": false,
+      "count": 46
+    },
+    {
+      "id": "gi-lining",
+      "label": "Linings of the GI tract",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.iv",
+      "stateOnly": false,
+      "count": 69
+    },
+    {
+      "id": "mechanical-chemical",
+      "label": "Mechanical vs. chemical digestion",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.v",
+      "stateOnly": false,
+      "count": 53
+    },
+    {
+      "id": "chemical-digestion",
+      "label": "Digestion of proteins, fats & carbohydrates",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.vi",
+      "stateOnly": false,
+      "count": 86
+    },
+    {
+      "id": "dig-exercise-obesity",
+      "label": "Exercise & obesity",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.vii",
+      "stateOnly": false,
+      "count": 7
+    },
+    {
+      "id": "dig-diseases",
+      "label": "Digestive diseases",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.viii",
+      "stateOnly": false,
+      "count": 55
+    },
+    {
+      "id": "dig-diseases-advanced",
+      "label": "Additional digestive diseases",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.ix",
+      "stateOnly": true,
+      "count": 6
+    },
+    {
+      "id": "liver-pancreas",
+      "label": "Liver & pancreas function",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.x",
+      "stateOnly": true,
+      "count": 67
+    },
+    {
+      "id": "dig-treatments",
+      "label": "Digestive treatments & prevention",
+      "kind": "topic",
+      "system": "digestive",
+      "rule": "3.b.xi",
+      "stateOnly": true,
+      "count": 11
+    },
+    {
+      "id": "mouth-teeth",
+      "label": "Mouth, teeth & salivary glands",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 54
+    },
+    {
+      "id": "esophagus",
+      "label": "Esophagus",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 24
+    },
+    {
+      "id": "stomach",
+      "label": "Stomach",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 117
+    },
+    {
+      "id": "small-intestine",
+      "label": "Small intestine",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 118
+    },
+    {
+      "id": "large-intestine",
+      "label": "Large intestine",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 42
+    },
+    {
+      "id": "gi-hormones",
+      "label": "Digestive hormones",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 32
+    },
+    {
+      "id": "absorption",
+      "label": "Absorption",
+      "kind": "structure",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-anatomy",
+      "count": 65
+    },
+    {
+      "id": "ulcers",
+      "label": "Stomach & duodenal ulcers",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 11
+    },
+    {
+      "id": "gi-cancer",
+      "label": "Digestive cancers",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 13
+    },
+    {
+      "id": "diarrhea",
+      "label": "Diarrhea",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 5
+    },
+    {
+      "id": "lactose-intolerance",
+      "label": "Lactose intolerance",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 7
+    },
+    {
+      "id": "hepatitis",
+      "label": "Hepatitis",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 16
+    },
+    {
+      "id": "appendicitis",
+      "label": "Appendicitis",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": false,
+      "parent": "dig-diseases",
+      "count": 8
+    },
+    {
+      "id": "diverticular-disease",
+      "label": "Diverticular disease",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": true,
+      "parent": "dig-diseases-advanced",
+      "count": 0
+    },
+    {
+      "id": "gerd",
+      "label": "GERD",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": true,
+      "parent": "dig-diseases-advanced",
+      "count": 5
+    },
+    {
+      "id": "ulcerative-colitis",
+      "label": "Ulcerative colitis",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": true,
+      "parent": "dig-diseases-advanced",
+      "count": 0
+    },
+    {
+      "id": "crohns-disease",
+      "label": "Crohn's disease",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": true,
+      "parent": "dig-diseases-advanced",
+      "count": 0
+    },
+    {
+      "id": "celiac-disease",
+      "label": "Celiac disease",
+      "kind": "condition",
+      "system": "digestive",
+      "stateOnly": true,
+      "parent": "dig-diseases-advanced",
+      "count": 1
+    },
+    {
+      "id": "immune-organs",
+      "label": "Immune organs & lymphatic anatomy",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.i",
+      "stateOnly": false,
+      "count": 99
+    },
+    {
+      "id": "innate-immunity",
+      "label": "Innate immunity",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.ii",
+      "stateOnly": false,
+      "count": 165
+    },
+    {
+      "id": "adaptive-immunity",
+      "label": "Adaptive immunity",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.iii",
+      "stateOnly": false,
+      "count": 200
+    },
+    {
+      "id": "immune-response-allergy",
+      "label": "Immune response & allergic reactions",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.iv",
+      "stateOnly": false,
+      "count": 67
+    },
+    {
+      "id": "immune-disorders",
+      "label": "Immunodeficiency, autoimmune & hypersensitivity disorders",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.v",
+      "stateOnly": false,
+      "count": 72
+    },
+    {
+      "id": "transplants",
+      "label": "Organ transplants & rejection",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.vi",
+      "stateOnly": true,
+      "count": 4
+    },
+    {
+      "id": "cancer-immunotherapy",
+      "label": "Cancer immunotherapy",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.vii",
+      "stateOnly": true,
+      "count": 1
+    },
+    {
+      "id": "immune-disorders-advanced",
+      "label": "Additional immune disorders",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.viii",
+      "stateOnly": true,
+      "count": 4
+    },
+    {
+      "id": "immune-treatments",
+      "label": "Immune treatments & prevention",
+      "kind": "topic",
+      "system": "immune",
+      "rule": "3.c.ix",
+      "stateOnly": true,
+      "count": 11
+    },
+    {
+      "id": "antibodies",
+      "label": "Antibodies",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 90
+    },
+    {
+      "id": "lymphocytes",
+      "label": "B & T cells",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 97
+    },
+    {
+      "id": "innate-cells",
+      "label": "Innate immune cells",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 67
+    },
+    {
+      "id": "inflammation",
+      "label": "Inflammation & fever",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 56
+    },
+    {
+      "id": "complement",
+      "label": "Complement system",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 16
+    },
+    {
+      "id": "mhc-antigen-presentation",
+      "label": "MHC & antigen presentation",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 13
+    },
+    {
+      "id": "vaccines-immunity-types",
+      "label": "Vaccines & types of immunity",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 21
+    },
+    {
+      "id": "barriers",
+      "label": "Anatomical barriers",
+      "kind": "structure",
+      "system": "immune",
+      "stateOnly": false,
+      "count": 34
+    },
+    {
+      "id": "hiv-aids",
+      "label": "HIV/AIDS",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 14
+    },
+    {
+      "id": "cvid",
+      "label": "Common variable immunodeficiency",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 1
+    },
+    {
+      "id": "scid",
+      "label": "Severe combined immunodeficiency",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 3
+    },
+    {
+      "id": "immunodeficiency",
+      "label": "Immunodeficiency",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 8
+    },
+    {
+      "id": "multiple-sclerosis",
+      "label": "Multiple sclerosis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 10
+    },
+    {
+      "id": "rheumatoid-arthritis",
+      "label": "Rheumatoid arthritis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 3
+    },
+    {
+      "id": "hashimoto",
+      "label": "Hashimoto's thyroiditis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 2
+    },
+    {
+      "id": "graves",
+      "label": "Graves' disease",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 9
+    },
+    {
+      "id": "autoimmunity",
+      "label": "Autoimmunity",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 15
+    },
+    {
+      "id": "hypersensitivity",
+      "label": "Hypersensitivity (types I-IV)",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 11
+    },
+    {
+      "id": "anaphylaxis",
+      "label": "Anaphylaxis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 8
+    },
+    {
+      "id": "urticaria",
+      "label": "Urticaria",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 3
+    },
+    {
+      "id": "myasthenia-gravis",
+      "label": "Myasthenia gravis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 8
+    },
+    {
+      "id": "arthus-reaction",
+      "label": "Arthus reaction",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 0
+    },
+    {
+      "id": "serum-sickness",
+      "label": "Serum sickness",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 2
+    },
+    {
+      "id": "contact-dermatitis",
+      "label": "Contact dermatitis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": false,
+      "parent": "immune-disorders",
+      "count": 1
+    },
+    {
+      "id": "lupus",
+      "label": "Systemic lupus erythematosus",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": true,
+      "parent": "immune-disorders-advanced",
+      "count": 3
+    },
+    {
+      "id": "dermatomyositis",
+      "label": "Dermatomyositis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": true,
+      "parent": "immune-disorders-advanced",
+      "count": 0
+    },
+    {
+      "id": "scleroderma",
+      "label": "Scleroderma",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": true,
+      "parent": "immune-disorders-advanced",
+      "count": 1
+    },
+    {
+      "id": "psoriasis",
+      "label": "Psoriasis & psoriatic arthritis",
+      "kind": "condition",
+      "system": "immune",
+      "stateOnly": true,
+      "parent": "immune-disorders-advanced",
+      "count": 0
+    },
+    {
+      "id": "diagram",
+      "label": "Diagram / image",
+      "kind": "format",
+      "stateOnly": false,
+      "count": 188
+    },
+    {
+      "id": "calculation",
+      "label": "Calculation",
+      "kind": "format",
+      "stateOnly": false,
+      "count": 11
+    },
+    {
+      "id": "state-national",
+      "label": "State & National level",
+      "kind": "level",
+      "stateOnly": false,
+      "count": 145
+    }
+  ]
+}
