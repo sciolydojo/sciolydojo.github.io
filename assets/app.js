@@ -1,53 +1,39 @@
-/* A&P Practice: static question browser for the JSON files in data/.
+/* Science Olympiad practice: static question browser.
+ *
+ * Events and where their data lives:
+ *   Anatomy & Physiology  data/index.json + data/<system>.json   (groups = body systems)
+ *   Disease Detectives    data/dd/questions.json, tags.json, tests.json   (groups = rule topics; copied from dd_data/)
  *
  * Routes (hash-based so it works from any GitHub Pages subpath):
- *   #/                                   home
- *   #/<system>                           random question from a system
- *   #/<system>/<tag>                     random question from a system + tag
- *   #/<system>[/<tag>]/q/<questionId>    a specific question within that category
+ *   #/                                  home (pick an event)
+ *   #/<event>                           event page: its groups and subcategories (ap, dd)
+ *   #/<group>                           random question from a group (e.g. respiratory, outbreak-investigation)
+ *   #/<group>/<tag>                     random question from a group + tag
+ *   #/<group>[/<tag>]/q/<questionId>    a specific question within that category
  */
 (function () {
   'use strict';
 
-  const SYSTEMS = ['respiratory', 'digestive', 'immune'];
   const TYPE_LABEL = {
     multiple_choice: 'Choose one',
     multiple_select: 'Choose all that apply',
     true_false: 'True or false',
     fill_in: 'Fill in the blank',
     short_answer: 'Short answer',
+    match: 'Matching',
+    calc: 'Calculation',
+    fill_text: 'Fill in the blank',
+    free: 'Free response',
   };
-  const GROUPS = [
-    { kind: 'topic', title: 'Topics from the 2026 rules' },
-    { kind: 'structure', title: 'Body parts & cells' },
-    { kind: 'format', title: 'Question style' },
-    { kind: 'level', title: 'Competition level' },
-  ];
 
   const app = document.getElementById('app');
   const dialog = document.getElementById('ref-dialog');
   const dialogBody = document.getElementById('ref-body');
 
-  const state = {
-    index: null,
-    files: {},            // system -> file JSON
-    byId: new Map(),      // question id -> question
-    systemOf: new Map(),  // question id -> system
-    tags: new Map(),      // tag id -> tag definition
-    sources: new Map(),   // source id -> source
-    view: null,           // current question view
-  };
-
   /* ---------------- helpers ---------------- */
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  }
-
-  function el(html) {
-    const t = document.createElement('template');
-    t.innerHTML = html.trim();
-    return t.content.firstElementChild;
   }
 
   function shuffle(a) {
@@ -66,16 +52,287 @@
     try { sessionStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* private mode etc. */ }
   }
 
-  function systemTitle(system) {
-    return state.files[system] ? state.files[system].title : system;
+  function getJson(url) {
+    return fetch(url).then(r => { if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); });
   }
 
-  function tagLabel(tagId) {
-    const t = state.tags.get(tagId);
-    return t ? t.label : tagId;
+  /** Plain text: paragraphs split on blank lines, single newlines kept. */
+  function plainParagraphs(text) {
+    return String(text).split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => {
+      const cls = /^Big idea:/i.test(p) ? ' class="big-idea"' : '';
+      return `<p${cls}>${esc(p).replace(/\n/g, '<br>')}</p>`;
+    }).join('');
   }
 
-  /** Text with cross-question references turned into buttons that open the referenced question. */
+  /* Small, safe markdown subset used by the Disease Detectives data:
+     paragraphs, pipe tables, - / 1. lists, # headings, **bold**, *italic*, `code`. */
+  function mdInline(s) {
+    return esc(s)
+      .replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[^*\w])\*([^*\s][^*\n]*?[^*\s]|[^*\s])\*(?![*\w])/g, '$1<em>$2</em>')
+      .replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  }
+
+  function md(text) {
+    const lines = String(text || '').replace(/\r/g, '').split('\n');
+    const out = [];
+    let para = [];
+    const flush = () => { if (para.length) { out.push(`<p>${para.map(mdInline).join('<br>')}</p>`); para = []; } };
+    const cells = l => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+    for (let i = 0; i < lines.length;) {
+      const line = lines[i];
+      if (!line.trim()) { flush(); i++; continue; }
+      if (/^\s*\|/.test(line)) {
+        flush();
+        const rows = [];
+        while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(lines[i++]);
+        const sepIdx = rows.findIndex(r => /^\s*\|?\s*:?-{2,}/.test(r));
+        const head = sepIdx === 1 ? cells(rows[0]) : null;
+        const body = rows.filter((r, k) => k !== sepIdx && !(head && k === 0)).map(cells);
+        out.push(`<div class="table-wrap"><table class="md-table">${head ? `<thead><tr>${head.map(c => `<th scope="col">${mdInline(c)}</th>`).join('')}</tr></thead>` : ''}<tbody>${body.map(r => `<tr>${r.map(c => `<td>${mdInline(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+        continue;
+      }
+      if (/^\s*[-*•] /.test(line)) {
+        flush();
+        const items = [];
+        while (i < lines.length && /^\s*[-*•] /.test(lines[i])) items.push(lines[i++].replace(/^\s*[-*•] /, ''));
+        out.push(`<ul>${items.map(t => `<li>${mdInline(t)}</li>`).join('')}</ul>`);
+        continue;
+      }
+      if (/^\s*\d+[.)] /.test(line) && (para.length === 0)) {
+        const items = [];
+        while (i < lines.length && /^\s*\d+[.)] /.test(lines[i])) items.push(lines[i++].replace(/^\s*\d+[.)] /, ''));
+        out.push(`<ol>${items.map(t => `<li>${mdInline(t)}</li>`).join('')}</ol>`);
+        continue;
+      }
+      const h = line.match(/^\s*#{1,6}\s+(.*)$/);
+      if (h) { flush(); out.push(`<p><strong>${mdInline(h[1])}</strong></p>`); i++; continue; }
+      para.push(line.trim());
+      i++;
+    }
+    flush();
+    return out.join('');
+  }
+
+  /* ---------------- grading helpers ---------------- */
+
+  function norm(s) {
+    return String(s).toLowerCase()
+      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[’'`]/g, '')
+      .replace(/[^a-z0-9.]+/g, ' ')
+      .replace(/\.(?=\s|$)/g, '')
+      .trim()
+      .replace(/^(the|a|an) /, '');
+  }
+
+  function singular(s) {
+    return s.split(' ').map(w => (w.length > 3 && /es$/.test(w) && !/ses$/.test(w)) ? w.slice(0, -2)
+      : (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) ? w.slice(0, -1) : w).join(' ');
+  }
+
+  function textMatches(input, alts) {
+    const n = norm(input);
+    if (!n) return false;
+    return alts.some(alt => {
+      const a = norm(alt);
+      return a === n || singular(a) === singular(n);
+    });
+  }
+
+  /** Matching answers look like "P. Fulminant", "g. John Snow", "I. Agent or H. Pathogen (both accepted)" or just "Fomite". */
+  function matchAlternatives(answer) {
+    const a = String(answer).replace(/\((?:both|either)[^)]*\)/ig, '').trim();
+    const alts = [];
+    for (const part of a.split(/\s+or\s+|\s*\/\s*/i)) {
+      const m = part.trim().match(/^([A-Za-z]{1,2})[.)]\s+(.+)$/);
+      if (m) { alts.push(m[1]); alts.push(m[2]); alts.push(`${m[1]} ${m[2]}`); }
+      else if (part.trim()) alts.push(part.trim());
+    }
+    return alts;
+  }
+
+  function parseNumber(s) {
+    const m = String(s).replace(/,(?=\d{3}\b)/g, '').match(/^\s*[-−]?\d*\.?\d+\s*%?\s*$/);
+    if (!m) return null;
+    return { value: parseFloat(m[0].replace('−', '-').replace('%', '')), percent: /%/.test(m[0]) };
+  }
+
+  /** The single expected number of a calculation answer (the number after the last "="), or null if it has several parts. */
+  function expectedNumber(answer) {
+    const a = String(answer);
+    if (/[;\n]/.test(a) || /\b[A-E][.)]\s/.test(a)) return null;
+    const tail = a.includes('=') ? a.slice(a.lastIndexOf('=') + 1) : a;
+    const m = tail.replace(/,(?=\d{3}\b)/g, '').match(/^\s*[≈~]?\s*([-−]?\d*\.?\d+)/);
+    return m ? parseFloat(m[1].replace('−', '-')) : null;
+  }
+
+  function numbersAgree(got, want) {
+    const close = (x, y) => Math.abs(x - y) <= Math.max(Math.abs(y) * 0.01, 1e-9) ||
+      Math.abs(x - y) <= 0.5 * Math.pow(10, -decimals(x)); // student rounded
+    return [got, got / 100, got * 100].some(x => close(x, want));
+  }
+
+  function decimals(x) {
+    const s = String(x);
+    return s.includes('.') ? s.split('.')[1].length : 0;
+  }
+
+  /* ---------------- events ---------------- */
+
+  const AP = {
+    id: 'ap',
+    title: 'Anatomy & Physiology',
+    blurb: 'Respiratory, digestive and immune systems.',
+    colors: { respiratory: 'var(--c1)', digestive: 'var(--c2)', immune: 'var(--c3)' },
+    tagSections: [
+      { kind: 'topic', title: 'Topics from the 2026 rules', nest: true },
+      { kind: 'structure', title: 'Body parts & cells' },
+      { kind: 'format', title: 'Question style', chips: true },
+      { kind: 'level', title: 'Competition level', chips: true },
+    ],
+    async load() {
+      const index = await getJson('data/index.json');
+      this.tags = new Map((index.tags || []).map(t => [t.id, t]));
+      const sources = new Map((index.sources || []).map(s => [s.id, s]));
+      const files = await Promise.all(index.files.map(f => getJson('data/' + f.file)));
+      this.groups = index.files.map((f, i) => {
+        const qs = files[i].questions.map(q => normalizeAp(q, f.system, sources));
+        return { id: f.system, title: files[i].title, questions: qs, color: this.colors[f.system] };
+      });
+    },
+    tagsForGroup(group) {
+      return [...this.tags.values()].filter(t => !t.system || t.system === group.id);
+    },
+  };
+
+  function normalizeAp(q, system, sources) {
+    const s = sources.get(q.source);
+    const notices = [];
+    const note = q.note ? richText(q, 'note') : '';
+    if (q.answerSource === 'corrected' && q.officialAnswer !== undefined) {
+      const official = formatAnswer(Object.assign({}, q, { answer: q.officialAnswer }));
+      notices.push(`<strong>Answer key corrected:</strong> the original test’s key said “${esc(official)}”. ${note}`);
+    } else if (q.uncertain) {
+      notices.push(`<strong>Heads up:</strong> experts could disagree about this question’s answer. ${note.replace(/^Uncertain:\s*/, '')}`);
+    } else if (note) {
+      notices.push(`<strong>Note:</strong> ${note}`);
+    }
+    return Object.assign({}, q, {
+      event: 'ap',
+      sourceName: s ? s.name : q.source,
+      imageUrls: (q.images || []).map(p => 'data/' + p),
+      contextHtml: q.context ? `<div class="context plain">${richText(q, 'context')}</div>` : '',
+      promptHtml: `<p class="prompt plain">${richText(q, 'prompt')}</p>`,
+      explanationHtml: q.explanation ? plainParagraphs(q.explanation) : '',
+      advancedHtml: q.advancedExplanation ? richText(q, 'advancedExplanation') : '',
+      notices,
+    });
+  }
+
+  const DD = {
+    id: 'dd',
+    title: 'Disease Detectives',
+    blurb: 'Epidemiology: surveillance, outbreak investigation, and disease patterns, control and prevention.',
+    palette: ['var(--c4)', 'var(--c5)', 'var(--c6)'],
+    tagSections: [
+      { kind: 'rule', title: 'Topics from the 2026 rules' },
+      { kind: 'format', title: 'Question style', chips: true },
+    ],
+    async load() {
+      const [questions, taxonomy, tests] = await Promise.all([
+        getJson('data/dd/questions.json'), getJson('data/dd/tags.json'), getJson('data/dd/tests.json')]);
+      const testName = new Map(tests.map(t => [t.id, t.tournament]));
+      this.tags = new Map();
+      for (const topic of taxonomy.topics) {
+        for (const t of topic.tags) {
+          this.tags.set(t.id, { id: t.id, label: t.name, kind: 'rule', rule: t.rule, description: t.description, topic: topic.id });
+        }
+      }
+      for (const t of [
+        { id: 'calculation', label: 'Calculation', test: q => q.type === 'calc' },
+        { id: 'case-study', label: 'Case study', test: q => !!(q.scenario_text && q.scenario_text.length > 200 && q.type !== 'match') },
+        { id: 'diagram', label: 'Figure / table', test: q => (q.figures || []).length + (q.scenario_figures || []).length > 0 || /^\s*\|/m.test((q.scenario_text || '') + '\n' + q.prompt) },
+      ]) this.tags.set(t.id, { id: t.id, label: t.label, kind: 'format', test: t.test });
+      const formats = [...this.tags.values()].filter(t => t.kind === 'format');
+
+      const inScope = questions.filter(q => q.in_scope !== false);
+      const all = inScope.map(q => normalizeDd(q, testName, formats));
+      this.groups = taxonomy.topics.map((topic, i) => ({
+        id: topic.id,
+        title: topic.name,
+        rule: topic.rule,
+        color: this.palette[i % this.palette.length],
+        questions: all.filter(q => (q.topics || []).includes(topic.id)),
+      }));
+    },
+    tagsForGroup(group) {
+      return [...this.tags.values()].filter(t => t.kind !== 'rule' || t.topic === group.id);
+    },
+  };
+
+  const DD_TYPES = { mc: 'multiple_choice', multi: 'multiple_select', tf: 'true_false', short: 'short_answer',
+    free: 'free', fill: 'fill_text', match: 'match', calc: 'calc' };
+
+  function normalizeDd(q, testName, formats) {
+    const type = DD_TYPES[q.type] || 'short_answer';
+    const notices = [];
+    const note = q.key_note ? md(q.key_note).replace(/^<p>|<\/p>$/g, '') : '';
+    if (q.answer_status === 'key_corrected') {
+      notices.push(`<strong>Answer key corrected:</strong> the original test’s key said “${esc(q.original_key_answer ?? '')}”. ${note}`);
+    } else if (q.answer_status === 'key_questionable') {
+      notices.push(`<strong>Heads up:</strong> the answer key for this question is debatable. ${note}`);
+    } else if (q.answer_status === 'derived') {
+      notices.push('<strong>Note:</strong> this test had no answer key, so this answer was worked out independently.');
+    }
+    const images = [...(q.scenario_figures || []), ...(q.figures || [])].filter((p, i, a) => a.indexOf(p) === i);
+    const nq = {
+      event: 'dd',
+      id: q.id,
+      number: q.number,
+      points: q.points,
+      type,
+      sourceName: testName.get(q.test_id) || q.test_id,
+      choices: (q.choices || []).map(c => ({ id: c.label, text: c.text })),
+      answer: q.answer,
+      answerText: q.answer_text,
+      imageUrls: images.map(p => 'data/dd/' + p),
+      contextHtml: q.scenario_text ? `<div class="context md">${md(q.scenario_text)}</div>` : '',
+      promptHtml: `<div class="prompt md">${md(q.prompt)}</div>`,
+      explanationHtml: q.explanation ? md(q.explanation) : '',
+      advancedHtml: '',
+      notices,
+      topics: q.topics || [],
+    };
+    nq.tags = [...(q.tags || []), ...formats.filter(t => t.test(q)).map(t => t.id)];
+    return nq;
+  }
+
+  const EVENTS = [AP, DD];
+  const state = { view: null, loading: new Map() };
+  const groupIndex = new Map();   // group id -> { event, group }
+  const byId = new Map();         // question id -> { event, group(s), question }
+
+  function ensureLoaded(ev) {
+    if (!state.loading.has(ev.id)) {
+      state.loading.set(ev.id, ev.load().then(() => {
+        for (const g of ev.groups) {
+          groupIndex.set(g.id, { event: ev, group: g });
+          for (const q of g.questions) byId.set(q.id, q);
+        }
+      }));
+    }
+    return state.loading.get(ev.id);
+  }
+
+  /** Which event a route's first segment belongs to, without loading data. */
+  const KNOWN_GROUPS = {
+    respiratory: AP, digestive: AP, immune: AP,
+    'background-surveillance': DD, 'outbreak-investigation': DD, 'patterns-control-prevention': DD,
+  };
+
+  /* ---------------- A&P text with cross-question references ---------------- */
+
   function richText(q, field) {
     const text = q[field] || '';
     const refs = (q.refs || []).filter(r => r.field === field).sort((a, b) => a.start - b.start);
@@ -88,7 +345,7 @@
       out += esc(chars.slice(pos, r.start).join(''));
       const label = chars.slice(r.start, r.end).join('');
       const target = r.targets && r.targets[0];
-      if (target && state.byId.has(target.id)) {
+      if (target) {
         out += `<button type="button" class="ref-link" data-ref="${esc(target.id)}" title="Open question ${esc(target.number)}">${esc(label)}</button>`;
       } else {
         out += esc(label);
@@ -96,25 +353,6 @@
       pos = r.end;
     }
     return out + esc(chars.slice(pos).join(''));
-  }
-
-  function paragraphs(text, firstClass) {
-    return String(text).split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => {
-      const cls = /^Big idea:/i.test(p) ? 'big-idea' : '';
-      return `<p class="${cls}">${esc(p)}</p>`;
-    }).join('');
-  }
-
-  function imagesHtml(q) {
-    if (!q.images || !q.images.length) return '';
-    return `<div class="figures">${q.images.map(src =>
-      `<a href="data/${esc(src)}" target="_blank" rel="noopener"><img src="data/${esc(src)}" alt="Figure for question ${esc(q.number)}" loading="lazy"></a>`
-    ).join('')}</div>`;
-  }
-
-  function sourceLine(q) {
-    const s = state.sources.get(q.source);
-    return `${esc(s ? s.name : q.source)} · #${esc(q.number)}`;
   }
 
   function formatAnswer(q) {
@@ -134,34 +372,8 @@
       case 'fill_in':
         return a.map((alts, i) => (a.length > 1 ? `${blankLabel(q, i)}: ` : '') + alts.join(' / ')).join('\n');
       default:
-        return String(a);
+        return q.answerText || String(a);
     }
-  }
-
-  /* ---------------- grading ---------------- */
-
-  function norm(s) {
-    return String(s).toLowerCase()
-      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[’'`]/g, '')
-      .replace(/[^a-z0-9.]+/g, ' ')
-      .replace(/\.(?=\s|$)/g, '')
-      .trim()
-      .replace(/^(the|a|an) /, '');
-  }
-
-  function singular(s) {
-    return s.split(' ').map(w => (w.length > 3 && /es$/.test(w) && !/ses$/.test(w)) ? w.slice(0, -2)
-      : (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) ? w.slice(0, -1) : w).join(' ');
-  }
-
-  function blankMatches(input, alts) {
-    const n = norm(input);
-    if (!n) return false;
-    return alts.some(alt => {
-      const a = norm(alt);
-      return a === n || singular(a) === singular(n);
-    });
   }
 
   function blankLabel(q, i) {
@@ -170,19 +382,24 @@
     return `Blank ${i + 1}`;
   }
 
+  function imagesHtml(q) {
+    if (!q.imageUrls || !q.imageUrls.length) return '';
+    return `<div class="figures">${q.imageUrls.map(src =>
+      `<a href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="Figure for question ${esc(q.number)}" loading="lazy"></a>`
+    ).join('')}</div>`;
+  }
+
   /* ---------------- category picking ---------------- */
 
-  function questionsFor(system, tag) {
-    const file = state.files[system];
-    if (!file) return [];
-    return file.questions.filter(q => !tag || (q.tags || []).includes(tag));
+  function questionsFor(group, tag) {
+    return group.questions.filter(q => !tag || (q.tags || []).includes(tag));
   }
 
   /** Random question without repeats until the whole category has been seen (per browser tab). */
-  function pickQuestion(system, tag, avoidId) {
-    const pool = questionsFor(system, tag);
+  function pickQuestion(group, tag, avoidId) {
+    const pool = questionsFor(group, tag);
     if (!pool.length) return null;
-    const key = `bag:${system}:${tag || ''}`;
+    const key = `bag:${group.id}:${tag || ''}`;
     const valid = new Set(pool.map(q => q.id));
     let bag = (storageGet(key) || []).filter(id => valid.has(id));
     if (!bag.length) {
@@ -194,87 +411,99 @@
     return id;
   }
 
-  function categoryHash(system, tag) {
-    return '#/' + encodeURIComponent(system) + (tag ? '/' + encodeURIComponent(tag) : '');
+  function categoryHash(groupId, tag) {
+    return '#/' + encodeURIComponent(groupId) + (tag ? '/' + encodeURIComponent(tag) : '');
   }
 
-  /* ---------------- home ---------------- */
+  /* ---------------- pages ---------------- */
 
   function renderHome() {
-    document.title = 'A&P Practice';
-    const cards = SYSTEMS.filter(s => state.files[s]).map(system => {
-      const qs = state.files[system].questions;
+    document.title = 'SciOly Practice';
+    state.view = null;
+    app.innerHTML = `
+      <h1>Science Olympiad practice</h1>
+      <p class="lede">Pick an event, then a topic, to get random practice questions with explanations.</p>
+      <div class="systems">${EVENTS.map(ev => `
+        <section class="system-card event-card" style="--sys: ${ev === AP ? 'var(--c1)' : 'var(--c4)'}">
+          <div class="system-head">
+            <h2>${esc(ev.title)}</h2>
+            <a class="btn" href="#/${ev.id}">Practice</a>
+          </div>
+          <p class="event-blurb">${esc(ev.blurb)}</p>
+        </section>`).join('')}
+      </div>`;
+  }
+
+  function renderEvent(ev) {
+    document.title = `${ev.title} · SciOly Practice`;
+    state.view = null;
+    const cards = ev.groups.map(group => {
+      const qs = group.questions;
       const counts = new Map();
       for (const q of qs) for (const t of q.tags || []) counts.set(t, (counts.get(t) || 0) + 1);
-      const tagsHere = [...state.tags.values()].filter(t => counts.get(t.id) && (!t.system || t.system === system));
+      const tagsHere = ev.tagsForGroup(group).filter(t => counts.get(t.id));
 
-      const link = (t, extraClass) => `
-        <a class="tag-link ${extraClass || ''}" href="${categoryHash(system, t.id)}">
+      const link = t => `
+        <a class="tag-link" href="${categoryHash(group.id, t.id)}"${t.description ? ` title="${esc(t.description)}"` : ''}>
           <span class="name">${esc(t.label)}${t.rule ? `<span class="rule">${esc(t.rule)}</span>` : ''}${t.stateOnly ? '<span class="pill">State/Nat’l</span>' : ''}</span>
           <span class="count">${counts.get(t.id)}</span>
         </a>`;
 
-      const groups = GROUPS.map(g => {
-        const items = tagsHere.filter(t => t.kind === g.kind);
+      const sections = ev.tagSections.map(sec => {
+        const items = tagsHere.filter(t => t.kind === sec.kind);
         if (!items.length) return '';
-        if (g.kind === 'topic') {
-          const conditions = tagsHere.filter(t => t.kind === 'condition');
-          const lis = items.map(t => {
-            const kids = conditions.filter(c => c.parent === t.id);
-            return `<li>${link(t)}${kids.length ? `<ul class="tag-list sub">${kids.map(c => `<li>${link(c)}</li>`).join('')}</ul>` : ''}</li>`;
-          }).join('');
-          return `<section class="tag-group"><h3>${g.title}</h3><ul class="tag-list">${lis}</ul></section>`;
-        }
-        if (g.kind === 'structure') {
-          return `<section class="tag-group"><h3>${g.title}</h3><ul class="tag-list">${items.map(t => `<li>${link(t)}</li>`).join('')}</ul></section>`;
-        }
-        return `<section class="tag-group"><h3>${g.title}</h3><div class="chips">${items.map(t => link(t)).join('')}</div></section>`;
+        if (sec.chips) return `<section class="tag-group"><h3>${sec.title}</h3><div class="chips">${items.map(link).join('')}</div></section>`;
+        const lis = items.map(t => {
+          const kids = sec.nest ? tagsHere.filter(c => c.kind === 'condition' && c.parent === t.id) : [];
+          return `<li>${link(t)}${kids.length ? `<ul class="tag-list sub">${kids.map(c => `<li>${link(c)}</li>`).join('')}</ul>` : ''}</li>`;
+        }).join('');
+        return `<section class="tag-group"><h3>${sec.title}</h3><ul class="tag-list">${lis}</ul></section>`;
       }).join('');
 
       return `
-        <section class="system-card" data-system="${esc(system)}" aria-labelledby="h-${esc(system)}">
+        <section class="system-card" style="--sys: ${group.color}" aria-labelledby="h-${esc(group.id)}">
           <div class="system-head">
-            <h2 id="h-${esc(system)}">${esc(systemTitle(system))}</h2>
-            <a class="btn" href="${categoryHash(system)}">Random question · ${qs.length}</a>
+            <h2 id="h-${esc(group.id)}">${esc(group.title)}${group.rule ? ` <span class="rule">${esc(group.rule)}</span>` : ''}</h2>
+            <a class="btn" href="${categoryHash(group.id)}">Random question · ${qs.length}</a>
           </div>
-          ${groups}
+          ${sections}
         </section>`;
     }).join('');
 
     app.innerHTML = `
-      <h1>Anatomy &amp; Physiology practice</h1>
-      <p class="lede">Pick a body system or a topic to get a random question. Answer it, press Submit (or Enter), and read the explanation.</p>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="#/">Home</a> › ${esc(ev.title)}</nav>
+      <h1>${esc(ev.title)}</h1>
+      <p class="lede">Pick a group or a topic to get a random question. Answer it, press Submit (or Enter), and read the explanation.</p>
       <div class="systems">${cards}</div>`;
   }
 
-  /* ---------------- question ---------------- */
-
-  function renderQuestion(system, tag, q) {
-    const label = tag ? tagLabel(tag) : 'All topics';
-    document.title = `${label} · ${systemTitle(system)} · A&P Practice`;
-    state.view = { system, tag, q, submitted: false };
+  function renderQuestion(ev, group, tag, q) {
+    const tagDef = tag ? ev.tags.get(tag) : null;
+    const label = tagDef ? tagDef.label : 'All topics';
+    document.title = `${label} · ${group.title} · ${ev.title}`;
+    state.view = { ev, group, tag, q, submitted: false };
 
     const meta = [
-      `<span>${sourceLine(q)}</span>`,
+      `<span>${esc(q.sourceName)} · #${esc(q.number)}</span>`,
       `<span>${esc(TYPE_LABEL[q.type] || q.type)}</span>`,
       q.points ? `<span>${q.points} pt${q.points === 1 ? '' : 's'}</span>` : '',
     ].join('');
 
     app.innerHTML = `
       <nav class="crumbs" aria-label="Breadcrumb">
-        <a href="#/">Home</a> › <a href="${categoryHash(system)}">${esc(systemTitle(system))}</a>${tag ? ` › <a href="${categoryHash(system, tag)}">${esc(label)}</a>` : ''}
+        <a href="#/">Home</a> › <a href="#/${ev.id}">${esc(ev.title)}</a> › <a href="${categoryHash(group.id)}">${esc(group.title)}</a>${tag ? ` › <a href="${categoryHash(group.id, tag)}">${esc(label)}</a>` : ''}
       </nav>
       <article class="q-card">
         <div class="q-meta">${meta}</div>
-        ${q.context ? `<div class="context">${richText(q, 'context')}</div>` : ''}
-        <p class="prompt" id="q-prompt">${richText(q, 'prompt')}</p>
+        ${q.contextHtml}
+        ${q.promptHtml}
         ${imagesHtml(q)}
         <form id="q-form" novalidate>
           ${inputsHtml(q)}
           <div class="actions" id="q-actions">
             <button type="submit" class="btn" id="submit-btn">Submit</button>
           </div>
-          <p class="hint">Press Enter to submit${q.type === 'short_answer' ? ' (Shift + Enter for a new line)' : ''}.</p>
+          <p class="hint">Press Enter to submit${usesTextarea(q) ? ' (Shift + Enter for a new line)' : ''}.</p>
         </form>
         <div id="q-feedback" aria-live="polite"></div>
       </article>`;
@@ -283,6 +512,11 @@
     const first = app.querySelector('#q-form input[type=text], #q-form textarea');
     if (first && window.matchMedia('(pointer: fine)').matches) first.focus({ preventScroll: true });
     window.scrollTo(0, 0);
+  }
+
+  function usesTextarea(q) {
+    return q.type === 'short_answer' || q.type === 'free' || (q.type === 'calc' && expectedNumber(q.answer) === null) ||
+      (q.type === 'fill_text' && /;/.test(String(q.answer))) || (q.type === 'match' && /;/.test(String(q.answer)));
   }
 
   function inputsHtml(q) {
@@ -298,7 +532,7 @@
               <span class="opt-text">${esc(c.text)}</span>
               <span class="opt-status"></span>
             </label>
-            <div class="opt-expl">${esc(c.explanation || '')}</div>
+            ${c.explanation ? `<div class="opt-expl">${esc(c.explanation)}</div>` : ''}
           </div>`).join('')}</div></fieldset>`;
       }
       case 'true_false':
@@ -316,8 +550,14 @@
             <label for="blank-${i}">${q.answer.length > 1 ? esc(blankLabel(q, i)) : 'Your answer'}</label>
             <input type="text" id="blank-${i}" autocomplete="off" autocapitalize="off" spellcheck="false">
           </div>`).join('')}</div>`;
-      default:
-        return `<div class="blank"><label for="short">Your answer</label><textarea id="short" rows="4"></textarea></div>`;
+      default: {
+        if (!usesTextarea(q)) {
+          const placeholder = q.type === 'match' ? 'Letter or term' : q.type === 'calc' ? 'Your number' : '';
+          return `<div class="blank"><label for="short">Your answer</label><input type="text" id="short" autocomplete="off" autocapitalize="off" spellcheck="false"${placeholder ? ` placeholder="${placeholder}"` : ''}></div>`;
+        }
+        const hint = (q.type === 'fill_text' || q.type === 'match') ? '<p class="hint">Separate the blanks with semicolons.</p>' : '';
+        return `<div class="blank"><label for="short">Your answer</label><textarea id="short" rows="4"></textarea>${hint}</div>`;
+      }
     }
   }
 
@@ -354,8 +594,7 @@
       const inputs = [...form.querySelectorAll('.blank input')];
       const rows = q.answer.map((alts, i) => {
         const val = inputs[i].value.trim();
-        const ok = blankMatches(val, alts);
-        return { label: q.answer.length > 1 ? blankLabel(q, i) : 'Answer', val, alts, ok };
+        return { label: q.answer.length > 1 ? blankLabel(q, i) : 'Answer', val, alts, ok: textMatches(val, alts) };
       });
       const score = rows.filter(r => r.ok).length;
       const all = score === rows.length;
@@ -373,48 +612,46 @@
         <p class="hint">Spelling counts, but capitals, “the”, and plurals don’t. If your answer means the same thing, give yourself credit.</p>`;
       inputs.forEach(i => { i.readOnly = true; });
     } else {
-      const ta = form.querySelector('textarea');
-      const val = ta.value.trim();
-      ta.readOnly = true;
-      resultHtml = `<div class="result neutral">Compare your answer with the expected answer.</div>`;
+      const box = form.querySelector('#short');
+      const val = box.value.trim();
+      box.readOnly = true;
+      const expected = q.event === 'dd' ? md(q.answerText || String(q.answer)) : esc(q.answer);
+      let verdict = null; // true, false or null (compare yourself)
+      if (q.type === 'match' && !/;/.test(String(q.answer))) {
+        verdict = textMatches(val, matchAlternatives(q.answer));
+      } else if (q.type === 'calc') {
+        const want = expectedNumber(q.answer);
+        const got = parseNumber(val);
+        if (want !== null && got) verdict = numbersAgree(got.value, want) ? true : null;
+      } else if (val && (q.type === 'fill_text' || q.type === 'short_answer')) {
+        if (textMatches(val, [String(q.answerText || q.answer)])) verdict = true;
+      }
+      resultHtml = verdict === true ? `<div class="result good">Correct!</div>`
+        : verdict === false ? `<div class="result bad">Not quite. Compare your answer below.</div>`
+        : `<div class="result neutral">Compare your answer with the expected answer.</div>`;
       detailHtml = `<div class="answer-box">
         <div><span class="label">Your answer</span>${val ? esc(val) : '<span class="empty">(no answer)</span>'}</div>
-        <div><span class="label">Expected answer</span>${esc(q.answer)}</div>
+        <div class="expected"><span class="label">Expected answer</span>${expected}</div>
       </div>`;
     }
 
     form.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(i => { i.disabled = true; });
 
-    const notices = [];
-    const note = q.note ? richText(q, 'note') : '';
-    if (q.answerSource === 'corrected' && q.officialAnswer !== undefined) {
-      const official = formatAnswer(Object.assign({}, q, { answer: q.officialAnswer }));
-      notices.push(`<div class="notice"><strong>Answer key corrected:</strong> the original test’s key said “${esc(official)}”. ${note}</div>`);
-    } else if (q.uncertain) {
-      notices.push(`<div class="notice"><strong>Heads up:</strong> experts could disagree about this question’s answer. ${note.replace(/^Uncertain:\s*/, '')}</div>`);
-    } else if (note) {
-      notices.push(`<div class="notice"><strong>Note:</strong> ${note}</div>`);
-    }
-
     const feedback = document.getElementById('q-feedback');
     feedback.innerHTML = `
       ${resultHtml}
       ${detailHtml}
-      ${q.explanation ? `<section class="explanation"><h2>Explanation</h2>${paragraphs(q.explanation)}</section>` : ''}
-      ${notices.join('')}
-      ${q.advancedExplanation ? `<details class="more"><summary>More detail (advanced)</summary><div class="more-body">${richText(q, 'advancedExplanation')}</div></details>` : ''}`;
+      ${q.explanationHtml ? `<section class="explanation"><h2>Explanation</h2>${q.explanationHtml}</section>` : ''}
+      ${q.notices.map(n => `<div class="notice">${n}</div>`).join('')}
+      ${q.advancedHtml ? `<details class="more"><summary>More detail (advanced)</summary><div class="more-body">${q.advancedHtml}</div></details>` : ''}`;
 
     const actionsHtml = id => `
-      <a class="btn next-btn" id="${id}" href="${categoryHash(v.system, v.tag)}">Another question</a>
+      <a class="btn next-btn" id="${id}" href="${categoryHash(v.group.id, v.tag)}">Another question</a>
       <a class="btn secondary" href="#/">Home</a>`;
     document.getElementById('q-actions').innerHTML = actionsHtml('next-btn');
     feedback.insertAdjacentHTML('beforeend', `<div class="actions">${actionsHtml('next-btn-2')}</div>`);
-    form.querySelector('.hint').textContent = 'Press Enter for another question.';
+    form.querySelector(':scope > .hint').textContent = 'Press Enter for another question.';
     app.querySelectorAll('.next-btn').forEach(b => b.addEventListener('click', e => { e.preventDefault(); nextQuestion(); }));
-    resultFocus(feedback);
-  }
-
-  function resultFocus(feedback) {
     const r = feedback.querySelector('.result');
     if (r) r.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
@@ -422,27 +659,27 @@
   function nextQuestion() {
     const v = state.view;
     if (!v) return;
-    const id = pickQuestion(v.system, v.tag, v.q.id);
-    location.hash = categoryHash(v.system, v.tag) + '/q/' + encodeURIComponent(id);
+    const id = pickQuestion(v.group, v.tag, v.q.id);
+    location.hash = categoryHash(v.group.id, v.tag) + '/q/' + encodeURIComponent(id);
   }
 
-  /* ---------------- referenced-question dialog ---------------- */
+  /* ---------------- referenced-question dialog (A&P) ---------------- */
 
   function openRef(id) {
-    const q = state.byId.get(id);
+    const q = byId.get(id);
     if (!q) return;
     document.getElementById('ref-title').textContent = `Question ${q.number}`;
     const choices = q.choices && q.choices.length
       ? `<ul class="ref-choices">${q.choices.map(c => `<li><b>${esc(c.id)}.</b>${esc(c.text)}</li>`).join('')}</ul>` : '';
     dialogBody.innerHTML = `
-      <div class="q-meta"><span>${sourceLine(q)}</span><span>${esc(TYPE_LABEL[q.type] || q.type)}</span></div>
-      ${q.context ? `<div class="context">${esc(q.context)}</div>` : ''}
-      <p class="prompt">${esc(q.prompt)}</p>
+      <div class="q-meta"><span>${esc(q.sourceName)} · #${esc(q.number)}</span><span>${esc(TYPE_LABEL[q.type] || q.type)}</span></div>
+      ${q.context ? `<div class="context plain">${esc(q.context)}</div>` : ''}
+      <p class="prompt plain">${esc(q.prompt)}</p>
       ${imagesHtml(q)}
       ${choices}
       <details class="more"><summary>Show answer</summary>
         <div class="more-body"><strong>Answer:</strong> ${esc(formatAnswer(q))}</div>
-        ${q.explanation ? `<div class="explanation">${paragraphs(q.explanation)}</div>` : ''}
+        ${q.explanationHtml ? `<div class="explanation">${q.explanationHtml}</div>` : ''}
       </details>`;
     if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
   }
@@ -464,7 +701,7 @@
     const v = state.view;
     if (!v || !location.hash.includes('/q/')) return;
     const t = e.target;
-    if (t && t.tagName === 'TEXTAREA' && e.shiftKey) return;            // new line in short answers
+    if (t && t.tagName === 'TEXTAREA' && e.shiftKey) return;            // new line in long answers
     if (t && t.matches && t.matches('summary, .ref-link, a:not(.next-btn), button:not(#submit-btn)')) return;
     e.preventDefault();
     if (!v.submitted) submit(); else nextQuestion();
@@ -472,28 +709,44 @@
 
   /* ---------------- routing ---------------- */
 
-  function route() {
+  async function route() {
     if (dialog.open) dialog.close();
     const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
-    if (!parts.length) { state.view = null; renderHome(); return; }
+    if (!parts.length) { renderHome(); return; }
 
-    const system = parts[0];
-    if (!state.files[system]) { notFound(); return; }
+    const ev = EVENTS.find(e => e.id === parts[0]) || KNOWN_GROUPS[parts[0]];
+    if (!ev) { notFound(); return; }
+    const hashAtStart = location.hash;
+    if (!state.loading.has(ev.id)) app.innerHTML = '<p class="loading">Loading questions…</p>';
+    try {
+      await ensureLoaded(ev);
+    } catch (err) {
+      console.error(err);
+      app.innerHTML = `<p class="error">Couldn’t load the questions (${esc(err.message)}). If you opened this file directly, serve the folder with a web server instead (for example <code>python3 -m http.server</code>).</p>`;
+      return;
+    }
+    if (location.hash !== hashAtStart) return; // the user navigated away while loading
+
+    if (parts[0] === ev.id) { renderEvent(ev); return; }
+
+    const entry = groupIndex.get(parts[0]);
+    if (!entry) { notFound(); return; }
+    const group = entry.group;
     let tag = null;
     let qid = null;
     if (parts[1] === 'q') qid = parts[2];
     else { tag = parts[1] || null; if (parts[2] === 'q') qid = parts[3]; }
-    if (tag && !state.tags.has(tag)) { notFound(); return; }
+    if (tag && !ev.tags.has(tag)) { notFound(); return; }
 
     if (!qid) {
-      const id = pickQuestion(system, tag, null);
+      const id = pickQuestion(group, tag, null);
       if (!id) { notFound('There are no questions in this category yet.'); return; }
-      history.replaceState(null, '', categoryHash(system, tag) + '/q/' + encodeURIComponent(id));
+      history.replaceState(null, '', categoryHash(group.id, tag) + '/q/' + encodeURIComponent(id));
       qid = id;
     }
-    const q = state.byId.get(qid);
-    if (!q || state.systemOf.get(qid) !== system) { notFound(); return; }
-    renderQuestion(system, tag, q);
+    const q = group.questions.find(x => x.id === qid);
+    if (!q) { notFound(); return; }
+    renderQuestion(ev, group, tag, q);
   }
 
   function notFound(msg) {
@@ -501,27 +754,6 @@
     app.innerHTML = `<h1>Not found</h1><p class="lede">${esc(msg || 'That page doesn’t exist.')}</p><p><a class="btn" href="#/">Back to home</a></p>`;
   }
 
-  /* ---------------- startup ---------------- */
-
-  async function load() {
-    const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); });
-    const index = await getJson('data/index.json');
-    state.index = index;
-    for (const t of index.tags || []) state.tags.set(t.id, t);
-    for (const s of index.sources || []) state.sources.set(s.id, s);
-    const files = await Promise.all(index.files.map(f => getJson('data/' + f.file)));
-    files.forEach((data, i) => {
-      const system = index.files[i].system;
-      state.files[system] = data;
-      for (const q of data.questions) { state.byId.set(q.id, q); state.systemOf.set(q.id, system); }
-    });
-  }
-
-  load().then(() => {
-    window.addEventListener('hashchange', route);
-    route();
-  }).catch(err => {
-    console.error(err);
-    app.innerHTML = `<p class="error">Couldn’t load the questions (${esc(err.message)}). If you opened this file directly, serve the folder with a web server instead (for example <code>python3 -m http.server</code>).</p>`;
-  });
+  window.addEventListener('hashchange', route);
+  route();
 })();

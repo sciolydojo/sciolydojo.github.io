@@ -1,0 +1,49 @@
+{
+  "source": "2026 Science Olympiad Division B Rules Manual, Disease Detectives B, section 3.b",
+  "topics": [
+    {
+      "id": "background-surveillance",
+      "name": "Background & Surveillance",
+      "rule": "3.b.i",
+      "tags": [
+        {"id": "clinical-vs-public-health", "rule": "3.b.i(1)", "name": "Clinical vs. Public Health Approach", "description": "Clinical approach (health of individuals) vs. public health approach (health of populations)."},
+        {"id": "history", "rule": "3.b.i(2)", "name": "History of Epidemiology", "description": "History and development of epidemiology and the people behind it."},
+        {"id": "roles-of-epidemiology", "rule": "3.b.i(3)", "name": "Roles of Epidemiology", "description": "Roles of epidemiology in public health and the steps in solving health problems (definition, descriptive vs. analytic epidemiology, core functions)."},
+        {"id": "natural-history", "rule": "3.b.i(4)", "name": "Natural History & Spectrum of Disease", "description": "Natural history and spectrum of disease; infectious (bacterial, viral, fungal, protist, prion) and noninfectious causes (accidents, exposures, toxicities)."},
+        {"id": "terminology", "rule": "3.b.i(5)", "name": "Epidemiology Terminology", "description": "Basic terms from the glossary of CDC's Principles of Epidemiology in Public Health Practice (outbreak, epidemic, pandemic, risk, vector, etc.)."},
+        {"id": "surveillance", "rule": "3.b.i(6)", "name": "Surveillance", "description": "Role of surveillance, the 5-step surveillance process, types of surveillance, and attributes of a surveillance system."}
+      ]
+    },
+    {
+      "id": "outbreak-investigation",
+      "name": "Outbreak Investigation",
+      "rule": "3.b.ii",
+      "tags": [
+        {"id": "outbreak-scenario", "rule": "3.b.ii(1)", "name": "Outbreak Scenario Analysis", "description": "Analyze actual or hypothetical outbreaks given in case scenarios."},
+        {"id": "study-design", "rule": "3.b.ii(2)", "name": "Study Design", "description": "Experimental vs. observational studies; case-control, cohort, ecological, cross-sectional, etc.; advantages, disadvantages and choosing a design."},
+        {"id": "outbreak-steps", "rule": "3.b.ii(3)", "name": "Steps of an Outbreak Investigation", "description": "Steps in an outbreak investigation and how they guide hypothesis generation."},
+        {"id": "case-definition", "rule": "3.b.ii(4)", "name": "Case Definition (Person, Place, Time)", "description": "Using the person, place, and time triad to formulate case definitions; case classification."},
+        {"id": "data-interpretation", "rule": "3.b.ii(5)", "name": "Epi Curves, Line Lists & Lab Data", "description": "Interpret epi curves, line listings, cluster/spot maps, subdivided tables, PFGE gels, SNP mapping and PulseNet."},
+        {"id": "chain-of-transmission", "rule": "3.b.ii(6)", "name": "Epidemiologic Triad & Chain of Transmission", "description": "Agent-host-environment triad, chain of infection, reservoirs, portals, modes of transmission."},
+        {"id": "measures-of-association", "rule": "3.b.ii(7)", "name": "Attack Rate, Relative Risk & Odds Ratio", "description": "Calculate and compare attack rates, relative risk, odds ratios; judge whether data support a hypothesis."},
+        {"id": "causation", "rule": "3.b.ii(8)", "name": "Causation Models", "description": "Bradford Hill criteria, Koch's and Evans' postulates, DAGs, sufficient-component cause models, GRADE."},
+        {"id": "bias-confounding", "rule": "3.b.ii(9)", "name": "Bias, Error & Confounding", "description": "State/Nationals only: study design biases, random/systematic error, confounding, effect modification.", "level": "state-national"},
+        {"id": "herd-immunity-vaccines", "rule": "3.b.ii(10)", "name": "Herd Immunity & Vaccine Effectiveness", "description": "State/Nationals only: herd immunity, vaccine efficacy and effectiveness calculations.", "level": "state-national"}
+      ]
+    },
+    {
+      "id": "patterns-control-prevention",
+      "name": "Patterns, Control, and Prevention",
+      "rule": "3.b.iii",
+      "tags": [
+        {"id": "data-patterns", "rule": "3.b.iii(1)", "name": "Patterns & Trends in Data", "description": "Identify patterns and trends of epidemiologic data in charts, tables and graphs."},
+        {"id": "rates-calculation", "rule": "3.b.iii(2)", "name": "Rates, Ratios & Proportions", "description": "Calculate risk, ratio, proportion, incidence proportion (attack rate), incidence rate, prevalence, death rate and mortality rate."},
+        {"id": "disease-control", "rule": "3.b.iii(3)", "name": "Disease Control Strategies", "description": "Strategies of disease control (isolation, quarantine, vaccination, control/elimination/eradication, food safety) applied to scenarios."},
+        {"id": "prevention-levels", "rule": "3.b.iii(4)", "name": "Levels of Prevention", "description": "Scope and levels of prevention: primordial, primary, secondary, tertiary, quaternary."}
+      ]
+    }
+  ],
+  "flags": {
+    "in_scope=false": "Rule 3.a: matching pathogens to diseases, or recalling signs/symptoms, incubation/latency periods or infectious dose is not part of the event; also used for content unrelated to epidemiology (e.g. general biology trivia)."
+  }
+}

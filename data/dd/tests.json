@@ -1,0 +1,458 @@
+[
+  {
+    "id": "archimedean-2025",
+    "tournament": "2025 Archimedean Satellite Invitational",
+    "date": "2025",
+    "division": "B",
+    "source_files": [
+      "Archimedean Disease Detectives Answer Key.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 76,
+    "total_points": 139.5,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 4,
+      "key_questionable": 3,
+      "key_verified": 69
+    }
+  },
+  {
+    "id": "boyceville-2025",
+    "tournament": "Boyceville Satellite Invitational",
+    "date": "2025-12-06",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives B KEY.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 82,
+    "total_points": 186,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 6,
+      "key_questionable": 4,
+      "key_verified": 72
+    }
+  },
+  {
+    "id": "camas-2025",
+    "tournament": "Camas B Invitational 2025-2026",
+    "date": "2025-12-06",
+    "division": "B",
+    "source_files": [
+      "[TEST] Camas B 2025-26 - Disease Detectives.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no key; all answers derived. The 26-point vocabulary word-bank section is blank in the PDF and is omitted. Tiebreakers: 10, 19, 29, 34, 46, 62.",
+    "question_count": 90,
+    "total_points": 202.5,
+    "status_counts": {
+      "derived": 90,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "chaboya-2026",
+    "tournament": "Chaboya Satellite Invitational",
+    "date": "2026-02-07",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 75,
+    "total_points": 217,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 0,
+      "key_questionable": 1,
+      "key_verified": 74
+    }
+  },
+  {
+    "id": "crabso-2026",
+    "tournament": "CrabSO",
+    "date": "2026-01-24",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives TEST.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no key; all answers derived. The separate 'image sheet' (Image A for Q42) was not included in the PDF. Q58-62 are tiebreakers.",
+    "question_count": 82,
+    "total_points": 168,
+    "status_counts": {
+      "derived": 82,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "dulles-2025",
+    "tournament": "Dulles Invitational 2025-2026",
+    "date": "2025-2026",
+    "division": "B",
+    "source_files": [
+      "Dulles_DiseaseDetectivesB_TestFINAL.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no key; all answers derived. The original numbers two questions '80'; the history one is stored as 80h.",
+    "question_count": 104,
+    "total_points": 204,
+    "status_counts": {
+      "derived": 104,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "dw-satellite-2025",
+    "tournament": "DW Satellite",
+    "date": "2025-11-15",
+    "division": "B",
+    "source_files": [
+      "DiseaseDetectives_Key.pdf"
+    ],
+    "key": "full",
+    "notes": "[TBn] marks tiebreaker questions. Round to two decimal places unless mentioned otherwise.",
+    "question_count": 71,
+    "total_points": 108,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 3,
+      "key_questionable": 4,
+      "key_verified": 64
+    }
+  },
+  {
+    "id": "ems-2026",
+    "tournament": "EMS Invitational",
+    "date": "2026-01",
+    "division": "B",
+    "source_files": [
+      "EMS_Invitational_2026_Disease_Detective_Test_Paper.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no key; all answers derived. Questions 52, 55 and 61 are tiebreakers. Round answers to the nearest 0.01%.",
+    "question_count": 61,
+    "total_points": 74,
+    "status_counts": {
+      "derived": 61,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "ga-scrimmage-2025",
+    "tournament": "2026 Georgia Scrimmage",
+    "date": "2025-10-11",
+    "division": "B",
+    "source_files": [
+      "2026 GA Scrimmage - Disease Detectives - key.pdf"
+    ],
+    "key": "none",
+    "notes": "The 'key' PDF has no answers marked. All answers were derived independently from CDC definitions and the case data.",
+    "question_count": 50,
+    "total_points": 172,
+    "status_counts": {
+      "derived": 50,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "hdso-2026",
+    "tournament": "High Desert Invitational (HDSO) 2026 B",
+    "date": "2026-01-31",
+    "division": "B",
+    "source_files": [
+      "HDSO 2026 DISEASE DET KEY BC.pdf"
+    ],
+    "key": "full",
+    "notes": "Q1 (honesty pledge, 10 pts) is omitted. Fill-in-the-blank answers had to come from a vocabulary word bank (reproduced in the 'bank' scenario).",
+    "question_count": 122,
+    "total_points": 509,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 4,
+      "key_questionable": 3,
+      "key_verified": 115
+    }
+  },
+  {
+    "id": "hdso-mini-2026",
+    "tournament": "HDSO Disease Detective Mini 2026",
+    "date": "2026-01-03",
+    "division": "B/C",
+    "source_files": [
+      "2026 MINI DISEASE DETECTIVE TEST BC.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no answers marked. Fill-in-the-blank answers were meant to come from a vocabulary word bank on a linked spreadsheet, and the derived answers use those bank terms where they are visible. Q1 (honesty pledge, 10 pts) is omitted.",
+    "question_count": 60,
+    "total_points": 264,
+    "status_counts": {
+      "derived": 60,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "horace-greeley-2026",
+    "tournament": "Horace Greeley Satellite Invitational",
+    "date": "2026-01-19",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives Key.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 89,
+    "total_points": 110,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 2,
+      "key_questionable": 2,
+      "key_verified": 85
+    }
+  },
+  {
+    "id": "hylas-2025",
+    "tournament": "Hylas SO",
+    "date": "2025-12-07",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives B.pdf"
+    ],
+    "key": "none",
+    "notes": "Test only, with no answers marked. All answers were derived.",
+    "question_count": 44,
+    "total_points": 57,
+    "status_counts": {
+      "derived": 44,
+      "key_corrected": 0,
+      "key_questionable": 0,
+      "key_verified": 0
+    }
+  },
+  {
+    "id": "jso-2026",
+    "tournament": "JSO Invitational",
+    "date": "2026-02-14",
+    "division": "B",
+    "source_files": [
+      "KEY_DISEASE_B_JSO2026.pdf"
+    ],
+    "key": "full",
+    "notes": "(TB) marks tiebreaker questions. Some Greek symbols (R0) were lost in the PDF text and have been restored.",
+    "question_count": 106,
+    "total_points": 184,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 4,
+      "key_questionable": 1,
+      "key_verified": 101
+    }
+  },
+  {
+    "id": "lasso-2026",
+    "tournament": "LASSO Invitational",
+    "date": "2026",
+    "division": "B/C",
+    "source_files": [
+      "Disease Detectives B_C KEY.pdf"
+    ],
+    "key": "full",
+    "notes": "Combined B/C test (215 pts). Q57 and Q93 are marked 'division C only'.",
+    "question_count": 120,
+    "total_points": 215,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 1,
+      "key_questionable": 5,
+      "key_verified": 114
+    }
+  },
+  {
+    "id": "mason-2025",
+    "tournament": "Mason Invitational",
+    "date": "2025-11-15",
+    "division": "B",
+    "source_files": [
+      "Mason Div B Disease Detectives Key.pdf"
+    ],
+    "key": "full",
+    "notes": "Tiebreakers in order: #10, #45, #18.",
+    "question_count": 86,
+    "total_points": 137.5,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 3,
+      "key_questionable": 2,
+      "key_verified": 81
+    }
+  },
+  {
+    "id": "mustang-2025",
+    "tournament": "Mustang Invitational",
+    "date": "2025-11-08",
+    "division": "B",
+    "source_files": [
+      "Div B Disease key.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 96,
+    "total_points": 176,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 0,
+      "key_questionable": 4,
+      "key_verified": 92
+    }
+  },
+  {
+    "id": "mvso-2025",
+    "tournament": "Monta Vista Science Olympiad Invitational (MVSO)",
+    "date": "2025-11-14",
+    "division": "B",
+    "source_files": [
+      "MVSO Invite 2025 Disease Detectives B KEY.pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 127,
+    "total_points": 131,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 2,
+      "key_questionable": 2,
+      "key_verified": 123
+    }
+  },
+  {
+    "id": "ocit-2026",
+    "tournament": "2026 Official California Invitational Tournament (OCIT)",
+    "date": "2026",
+    "division": "B",
+    "source_files": [
+      "2026 OCIT Disease Detectives B Key.pdf"
+    ],
+    "key": "full",
+    "notes": "[TB] in the original marks tiebreaker questions. True/False items asked students to correct false statements.",
+    "question_count": 45,
+    "total_points": 120,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 4,
+      "key_questionable": 4,
+      "key_verified": 37
+    }
+  },
+  {
+    "id": "rose-city-2026",
+    "tournament": "Rose City Invitational",
+    "date": "2026-02-21",
+    "division": "B",
+    "source_files": [
+      "key.pdf"
+    ],
+    "key": "full",
+    "notes": "Round all answers to 3 decimal places.",
+    "question_count": 67,
+    "total_points": 181.2,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 7,
+      "key_questionable": 1,
+      "key_verified": 59
+    }
+  },
+  {
+    "id": "rsoi-2025",
+    "tournament": "Rickards Invitational (RSOI) Div. B Satellite",
+    "date": "2025-11-01",
+    "division": "B",
+    "source_files": [
+      "RSOI Disease Detectives B 2026 Key.pdf"
+    ],
+    "key": "full",
+    "notes": "MC answers are marked in bold in the key. Q38 (0-pt philosophy question) and Q71 (feedback) are omitted. Several vaccine-trial answers in the key were computed from numbers different from the printed table and have been recalculated.",
+    "question_count": 69,
+    "total_points": 123,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 8,
+      "key_questionable": 1,
+      "key_verified": 60
+    }
+  },
+  {
+    "id": "rustin-2025",
+    "tournament": "Rustin Invitational",
+    "date": "2025-12-10",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives Key (1).pdf"
+    ],
+    "key": "full",
+    "notes": null,
+    "question_count": 80,
+    "total_points": 173,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 1,
+      "key_questionable": 4,
+      "key_verified": 75
+    }
+  },
+  {
+    "id": "silvercreek-2026",
+    "tournament": "Silvercreek Satellite Invitational",
+    "date": "2026-01-25",
+    "division": "B",
+    "source_files": [
+      "DD key.pdf"
+    ],
+    "key": "full",
+    "notes": "Scanned Scilympiad key (image-only PDF), transcribed visually.",
+    "question_count": 59,
+    "total_points": 215,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 1,
+      "key_questionable": 2,
+      "key_verified": 56
+    }
+  },
+  {
+    "id": "wso-b-invitational-2026",
+    "tournament": "WSO B Invitational (Washington, Camas)",
+    "date": "2026-02-14",
+    "division": "B",
+    "source_files": [
+      "Disease Detectives Keys.pdf"
+    ],
+    "key": "full",
+    "notes": "Q1 (code-of-ethics pledge, 0 pts) is omitted.",
+    "question_count": 60,
+    "total_points": 61,
+    "status_counts": {
+      "derived": 0,
+      "key_corrected": 1,
+      "key_questionable": 1,
+      "key_verified": 58
+    }
+  }
+]

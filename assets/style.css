@@ -15,9 +15,12 @@
   --bad-soft: #fbe9e7;
   --warn: #8a5a00;
   --warn-soft: #fff4dc;
-  --resp: #2f7fb8;
-  --dig: #c0662b;
-  --imm: #7a4fb5;
+  --c1: #2f7fb8;
+  --c2: #c0662b;
+  --c3: #7a4fb5;
+  --c4: #1f8a7a;
+  --c5: #c2410c;
+  --c6: #a16207;
   --radius: 10px;
   --shadow: 0 1px 2px rgba(20, 30, 50, .06), 0 2px 8px rgba(20, 30, 50, .05);
 }
@@ -40,9 +43,12 @@
     --bad-soft: #3a1c1a;
     --warn: #f0c060;
     --warn-soft: #362a10;
-    --resp: #6fb3e6;
-    --dig: #ee9a62;
-    --imm: #b494e6;
+    --c1: #6fb3e6;
+    --c2: #ee9a62;
+    --c3: #b494e6;
+    --c4: #5fd0bd;
+    --c5: #fb923c;
+    --c6: #e2b84a;
     --shadow: none;
   }
 }
@@ -112,9 +118,9 @@ h1 { font-size: 1.6rem; line-height: 1.25; margin: .2rem 0 .4rem; }
   box-shadow: var(--shadow);
   padding: 1.1rem 1.1rem 1.25rem;
 }
-.system-card[data-system="respiratory"] { --sys: var(--resp); }
-.system-card[data-system="digestive"] { --sys: var(--dig); }
-.system-card[data-system="immune"] { --sys: var(--imm); }
+
+.system-head .rule { font-size: .8rem; font-weight: 500; color: var(--muted); margin-left: .3rem; }
+.event-blurb { margin: 0; color: var(--muted); }
 
 .system-head {
   display: flex;
@@ -225,10 +231,20 @@ h1 { font-size: 1.6rem; line-height: 1.25; margin: .2rem 0 .4rem; }
   background: var(--surface-2);
   border-left: 3px solid var(--border);
   border-radius: 6px;
-  white-space: pre-line;
 }
+.context.plain, .prompt.plain { white-space: pre-line; }
+.context.md > :first-child, .prompt.md > :first-child { margin-top: 0; }
+.context.md > :last-child, .prompt.md > :last-child { margin-bottom: 0; }
+.context.md p { margin: 0 0 .6rem; }
 
-.prompt { font-size: 1.12rem; font-weight: 500; margin: 0 0 1rem; white-space: pre-line; }
+.prompt { font-size: 1.12rem; font-weight: 500; margin: 0 0 1rem; }
+.prompt.md p { margin: 0 0 .6rem; }
+
+.md-table { border-collapse: collapse; margin: .5rem 0 .8rem; font-size: .92rem; font-weight: 400; }
+.md-table th, .md-table td { border: 1px solid var(--border); padding: .35rem .6rem; text-align: left; vertical-align: top; }
+.md-table th { background: var(--surface-2); font-weight: 600; }
+.context ul, .context ol, .prompt ul, .prompt ol, .explanation ul, .explanation ol, .answer-box ul, .answer-box ol { margin: .3rem 0 .7rem; padding-left: 1.4rem; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: var(--surface-2); padding: .05rem .3rem; border-radius: 4px; }
 
 .figures { display: grid; gap: .75rem; margin: 0 0 1rem; }
 .figures img {
@@ -323,6 +339,9 @@ textarea { min-height: 7rem; resize: vertical; }
   background: var(--surface-2);
   white-space: pre-line;
 }
+.answer-box > div.expected { white-space: normal; }
+.answer-box .expected p { margin: 0 0 .5rem; }
+.answer-box .expected > :last-child { margin-bottom: 0; }
 .answer-box .label { display: block; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .2rem; }
 
 .explanation { margin-top: 1.25rem; }
